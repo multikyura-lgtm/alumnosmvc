@@ -21,33 +21,45 @@
         </div>
 
         <div class="card-body">
+          <% if (request.getAttribute("error") !=null) { %>
 
-          <form action="<%=request.getContextPath()%>/alumnos" method="post">
-
-            <div class="mb-3">
-              <label class="form-label">Nombre</label>
-              <input type="text" name="nombre" class="form-control" placeholder="Introduzca el nombre" required>
+            <div class="alert alert-danger">
+              <%= request.getAttribute("error") %>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label">Apellidos</label>
-              <input type="text" name="apellidos" class="form-control" placeholder="Introduzca los apellidos" required>
-            </div>
+            <% } %>
+              <form action="<%=request.getContextPath()%>/alumnos" method="post">
 
-            <div class="mb-4">
-              <label class="form-label">Curso</label>
-              <input type="text" name="curso" class="form-control" placeholder="Ejemplo: Java" required>
-            </div>
+                <div class="mb-3">
+                  <label class="form-label">Nombre</label>
+                  <input type="text" name="nombre" class="form-control" placeholder="Introduzca el nombre"
+                    value="<%= request.getAttribute(" nombre") !=null ? request.getAttribute("nombre") : "" %>"
+                  required>
+                </div>
 
-            <button class="btn btn-success" type="submit">
-              💾 Guardar
-            </button>
+                <div class="mb-3">
+                  <label class="form-label">Apellidos</label>
+                  <input type="text" name="apellidos" class="form-control" placeholder="Introduzca los apellidos"
+                    value="<%= request.getAttribute(" apellidos") !=null ? request.getAttribute("apellidos") : "" %>"
+                  required>
+                </div>
 
-            <a class="btn btn-secondary" href="<%=request.getContextPath()%>/alumnos">
-              ↩ Volver
-            </a>
+                <div class="mb-4">
+                  <label class="form-label">Curso</label>
+                  <input type="text" name="curso" class="form-control" placeholder="Ejemplo: Java"
+                    value="<%= request.getAttribute(" curso") !=null ? request.getAttribute("curso") : "" %>"
+                  required>
+                </div>
 
-          </form>
+                <button class="btn btn-success" type="submit">
+                  💾 Guardar
+                </button>
+
+                <a class="btn btn-secondary" href="<%=request.getContextPath()%>/alumnos">
+                  ↩ Volver
+                </a>
+
+              </form>
 
         </div>
 

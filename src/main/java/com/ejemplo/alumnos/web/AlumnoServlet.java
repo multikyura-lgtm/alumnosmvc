@@ -22,138 +22,139 @@ public class AlumnoServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-        String path = req.getServletPath();
+    String path = req.getServletPath();
 
-        switch (path) {
+    switch (path) {
+        // Четко обрабатываем главный путь списка и поиска
+   case "/alumnos":
 
-            case "/alumnos/nuevo":
-                req.getRequestDispatcher("/nuevo.jsp")
-                        .forward(req, resp);
-                break;
-case "/alumnos/editar":
+    String buscar = req.getParameter("buscar");
+    String ordenar = req.getParameter("ordenar");
+    String direccion = req.getParameter("direccion");
 
-    String idEditar = req.getParameter("id");
-
-    if (idEditar != null) {
-
-        int id = Integer.parseInt(idEditar);
-
-        Alumno alumno = dao.buscarPorId(id);
-
-        req.setAttribute("alumno", alumno);
+    if (ordenar == null || ordenar.isBlank()) {
+        ordenar = "id";
     }
 
-    req.getRequestDispatcher("/editar.jsp")
-            .forward(req, resp);
+    if (direccion == null || direccion.isBlank()) {
+        direccion = "DESC";
+    }
 
+    req.setAttribute(
+        "alumnos",
+        dao.listar(buscar, ordenar, direccion)
+);
+
+    req.setAttribute("ordenar", ordenar);
+    req.setAttribute("direccion", direccion);
+
+    req.setAttribute("totalAlumnos", dao.contarAlumnos());
+    req.setAttribute("notaMedia", dao.notaMedia());
+
+    req.getRequestDispatcher("/alumnos.jsp").forward(req, resp);
     break;
-    case "/alumnos/eliminar":
 
-    String idEliminar = req.getParameter("id");
+        case "/alumnos/nuevo":
+            req.getRequestDispatcher("/nuevo.jsp").forward(req, resp);
+            break;
 
-    if (idEliminar != null) {
+        case "/alumnos/editar":
+            String idEditar = req.getParameter("id");
+            if (idEditar != null) {
+                int id = Integer.parseInt(idEditar);
+                Alumno alumno = dao.buscarPorId(id);
+                req.setAttribute("alumno", alumno);
+            }
+            req.getRequestDispatcher("/editar.jsp").forward(req, resp);
+            break;
 
-        int id = Integer.parseInt(idEliminar);
+        case "/alumnos/eliminar":
+            String idEliminar = req.getParameter("id");
+            if (idEliminar != null) {
+                int id = Integer.parseInt(idEliminar);
+                dao.eliminar(id);
+            }
+            resp.sendRedirect(req.getContextPath() + "/alumnos");
+            break;
 
-        dao.eliminar(id);
+        case "/alumnos/notas":
+            String idTexto = req.getParameter("id");
+            if (idTexto != null) {
+                int id = Integer.parseInt(idTexto);
+                Alumno alumno = dao.buscarPorId(id);
+                req.setAttribute("alumno", alumno);
+            }
+            req.getRequestDispatcher("/notas.jsp").forward(req, resp);
+            break;
+
+        default:
+            // Если пришли на непонятный адрес, просто уводим на главную
+            resp.sendRedirect(req.getContextPath() + "/alumnos");
+            break;
     }
-
-    resp.sendRedirect(req.getContextPath() + "/alumnos");
-
-    break;
-            case "/alumnos/notas":
-
-                String idTexto = req.getParameter("id");
-
-                if (idTexto != null) {
-                    int id = Integer.parseInt(idTexto);
-
-                    Alumno alumno = dao.buscarPorId(id);
-
-                    req.setAttribute("alumno", alumno);
-                }
-
-                req.getRequestDispatcher("/notas.jsp")
-                        .forward(req, resp);
-
-                break;
-
-            default:
-
-                req.setAttribute("alumnos", dao.listar());
-
-                req.getRequestDispatcher("/alumnos.jsp")
-                        .forward(req, resp);
-
-                break;
-        }
-
-    }
-
+}
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
-
         String path = req.getServletPath();
 
         switch (path) {
-
             case "/alumnos":
-
                 String nombre = req.getParameter("nombre");
                 String apellidos = req.getParameter("apellidos");
                 String curso = req.getParameter("curso");
 
-                dao.insertar(
-                        new Alumno(
-                                nombre,
-                                apellidos,
-                                curso,
-                                null
-                        )
+                if (nombre == null || nombre.isBlank()
+        || apellidos == null || apellidos.isBlank()
+        || curso == null || curso.isBlank()) {
+
+    req.setAttribute("error", "Todos los campos son obligatorios.");
+
+    req.setAttribute("nombre", nombre);
+    req.setAttribute("apellidos", apellidos);
+    req.setAttribute("curso", curso);
+
+    req.getRequestDispatcher("/nuevo.jsp").forward(req, resp);
+    return;
+}
+
+dao.insertar(new Alumno(nombre, apellidos, curso, null));
+resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=creado");
+break;
+            case "/alumnos/editar":
+                int idEditar = Integer.parseInt(req.getParameter("id"));
+                String nombreEditar = req.getParameter("nombre");
+                String apellidosEditar = req.getParameter("apellidos");
+                String cursoEditar = req.getParameter("curso");
+
+                Alumno alumnoEditar = new Alumno(
+                        idEditar,
+                        nombreEditar,
+                        apellidosEditar,
+                        cursoEditar,
+                        null
                 );
 
-                resp.sendRedirect(req.getContextPath() + "/alumnos");
-
+                dao.actualizar(alumnoEditar);
+                resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=editado");
                 break;
-case "/alumnos/editar":
 
-    int idEditar = Integer.parseInt(req.getParameter("id"));
-
-    String nombreEditar = req.getParameter("nombre");
-    String apellidosEditar = req.getParameter("apellidos");
-    String cursoEditar = req.getParameter("curso");
-
-    Alumno alumnoEditar = new Alumno(
-            idEditar,
-            nombreEditar,
-            apellidosEditar,
-            cursoEditar,
-            null
-    );
-
-    dao.actualizar(alumnoEditar);
-
-    resp.sendRedirect(req.getContextPath() + "/alumnos");
-
-    break;
             case "/alumnos/notas":
-
                 int id = Integer.parseInt(req.getParameter("id"));
-                double nota = Double.parseDouble(req.getParameter("nota"));
+                String notaParam = req.getParameter("nota");
+
+                Double nota = (notaParam == null || notaParam.isBlank()) 
+                        ? null 
+                        : Double.parseDouble(notaParam);
 
                 dao.actualizarNota(id, nota);
-
-                resp.sendRedirect(req.getContextPath() + "/alumnos");
-
+                resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=nota");
                 break;
         }
-
     }
-
 }
