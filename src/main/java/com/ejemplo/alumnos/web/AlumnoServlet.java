@@ -71,14 +71,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             req.getRequestDispatcher("/editar.jsp").forward(req, resp);
             break;
 
-        case "/alumnos/eliminar":
-            String idEliminar = req.getParameter("id");
-            if (idEliminar != null) {
-                int id = Integer.parseInt(idEliminar);
-                dao.eliminar(id);
-            }
-            resp.sendRedirect(req.getContextPath() + "/alumnos");
-            break;
+  
 
         case "/alumnos/notas":
             String idTexto = req.getParameter("id");
@@ -155,6 +148,15 @@ break;
                 dao.actualizarNota(id, nota);
                 resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=nota");
                 break;
+
+                case "/alumnos/eliminar":
+
+    int idEliminar = Integer.parseInt(req.getParameter("id"));
+
+    dao.eliminar(idEliminar);
+
+    resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=eliminado");
+    break;
         }
     }
 }

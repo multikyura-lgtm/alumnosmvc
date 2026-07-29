@@ -184,10 +184,15 @@
                                       href="<%=request.getContextPath()%>/alumnos/notas?id=<%=a.getId()%>">⭐ Nota</a>
 
                                     <form action="<%=request.getContextPath()%>/alumnos/eliminar" method="POST"
-                                      class="d-inline"
-                                      onsubmit="return confirm('¿Está seguro de eliminar este alumno?');">
+                                      class="d-inline">
+
                                       <input type="hidden" name="id" value="<%=a.getId()%>">
-                                      <button type="submit" class="btn btn-danger btn-sm">🗑 Eliminar</button>
+
+                                      <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEliminar" data-id="<%=a.getId()%>">
+                                        🗑 Eliminar
+                                      </button>
+
                                     </form>
                                   </div>
                                 </td>
@@ -205,6 +210,69 @@
 
                 </div>
               </div>
+              <!-- Modal de confirmación -->
+              <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel"
+                aria-hidden="true">
+
+                <div class="modal-dialog">
+
+                  <div class="modal-content">
+
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title" id="modalEliminarLabel">
+                        🗑 Eliminar alumno
+                      </h5>
+
+                      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                      </button>
+                    </div>
+
+                    <div class="modal-body">
+                      ¿Está seguro de que desea eliminar este alumno?
+                    </div>
+
+
+                    <div class="modal-footer">
+
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                      </button>
+
+                      <form id="formEliminar" action="<%=request.getContextPath()%>/alumnos/eliminar" method="post">
+
+                        <input type="hidden" id="idEliminar" name="id">
+
+                        <button type="submit" class="btn btn-danger">
+                          🗑 Eliminar
+                        </button>
+
+                      </form>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              </div>
+
+              <script>
+
+                const modalEliminar = document.getElementById("modalEliminar");
+
+                modalEliminar.addEventListener("show.bs.modal", function (event) {
+
+                  const boton = event.relatedTarget;
+
+                  const id = boton.getAttribute("data-id");
+
+                  document.getElementById("idEliminar").value = id;
+
+                });
+
+              </script>
               <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
             </body>
 
