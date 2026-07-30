@@ -109,32 +109,52 @@ if ("creado".equals(mensaje)) {
 
         switch (path) {
             case "/alumnos":
-                String nombre = req.getParameter("nombre");
-                String apellidos = req.getParameter("apellidos");
-                String curso = req.getParameter("curso");
+    String nombre = req.getParameter("nombre");
+    String apellidos = req.getParameter("apellidos");
+    String curso = req.getParameter("curso");
 
-                if (nombre == null || nombre.isBlank()
-        || apellidos == null || apellidos.isBlank()
-        || curso == null || curso.isBlank()) {
+    nombre = (nombre == null) ? "" : nombre.trim();
+    apellidos = (apellidos == null) ? "" : apellidos.trim();
+    curso = (curso == null) ? "" : curso.trim();
 
-    req.setAttribute("error", "Todos los campos son obligatorios.");
+    if (nombre.isBlank()
+            || apellidos.isBlank()
+            || curso.isBlank()) {
 
-    req.setAttribute("nombre", nombre);
-    req.setAttribute("apellidos", apellidos);
-    req.setAttribute("curso", curso);
+        req.setAttribute("error", "Todos los campos son obligatorios.");
 
-    req.getRequestDispatcher("/nuevo.jsp").forward(req, resp);
-    return;
-}
+        req.setAttribute("nombre", nombre);
+        req.setAttribute("apellidos", apellidos);
+        req.setAttribute("curso", curso);
 
-dao.insertar(new Alumno(nombre, apellidos, curso, null));
-resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=creado");
-break;
+        req.getRequestDispatcher("/nuevo.jsp").forward(req, resp);
+        return;
+    }
+
+    dao.insertar(new Alumno(nombre, apellidos, curso, null));
+    resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=creado");
+    break;
             case "/alumnos/editar":
                 int idEditar = Integer.parseInt(req.getParameter("id"));
                 String nombreEditar = req.getParameter("nombre");
                 String apellidosEditar = req.getParameter("apellidos");
                 String cursoEditar = req.getParameter("curso");
+
+                nombreEditar = (nombreEditar == null) ? "" : nombreEditar.trim();
+apellidosEditar = (apellidosEditar == null) ? "" : apellidosEditar.trim();
+cursoEditar = (cursoEditar == null) ? "" : cursoEditar.trim();
+
+if (nombreEditar.isBlank()
+        || apellidosEditar.isBlank()
+        || cursoEditar.isBlank()) {
+
+    req.setAttribute("error", "Todos los campos son obligatorios.");
+    req.setAttribute("alumno",
+            new Alumno(idEditar, nombreEditar, apellidosEditar, cursoEditar, null));
+
+    req.getRequestDispatcher("/editar.jsp").forward(req, resp);
+    return;
+}
 
                 Alumno alumnoEditar = new Alumno(
                         idEditar,
