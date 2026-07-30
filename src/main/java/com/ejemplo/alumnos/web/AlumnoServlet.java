@@ -53,6 +53,17 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 
     req.setAttribute("totalAlumnos", dao.contarAlumnos());
     req.setAttribute("notaMedia", dao.notaMedia());
+    String mensaje = req.getParameter("mensaje");
+
+if ("creado".equals(mensaje)) {
+    req.setAttribute("textoMensaje", "✅ Alumno añadido correctamente.");
+} else if ("editado".equals(mensaje)) {
+    req.setAttribute("textoMensaje", "✏️ Alumno actualizado correctamente.");
+} else if ("eliminado".equals(mensaje)) {
+    req.setAttribute("textoMensaje", "🗑️ Alumno eliminado correctamente.");
+} else if ("nota".equals(mensaje)) {
+    req.setAttribute("textoMensaje", "⭐ Nota actualizada correctamente.");
+}
 
     req.getRequestDispatcher("/alumnos.jsp").forward(req, resp);
     break;

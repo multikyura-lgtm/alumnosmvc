@@ -1,82 +1,81 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-  <%@ page import="com.ejemplo.alumnos.model.Alumno" %>
+  <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-    <% Alumno alumno=(Alumno) request.getAttribute("alumno"); %>
+    <!DOCTYPE html>
+    <html lang="es">
 
-      <!DOCTYPE html>
-      <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <title>Asignar Nota</title>
 
-      <head>
-        <meta charset="UTF-8">
-        <title>Asignar Nota</title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-      </head>
+    <body class="bg-light">
 
-      <body class="bg-light">
+      <div class="container mt-5">
 
-        <div class="container mt-5">
+        <div class="card shadow">
 
-          <div class="card shadow">
+          <div class="card-header bg-warning">
+            <h3 class="mb-0">⭐ Asignar Nota</h3>
+          </div>
 
-            <div class="card-header bg-warning">
-              <h3 class="mb-0">⭐ Asignar Nota</h3>
-            </div>
+          <div class="card-body">
 
-            <div class="card-body">
+            <c:if test="${not empty alumno}">
 
-              <% if (alumno !=null) { %>
+              <form action="${pageContext.request.contextPath}/alumnos/notas" method="post">
 
-                <form action="<%=request.getContextPath()%>/alumnos/notas" method="post">
+                <input type="hidden" name="id" value="${alumno.id}">
 
-                  <input type="hidden" name="id" value="<%= alumno.getId() %>">
+                <div class="mb-3">
+                  <label class="form-label">Alumno</label>
+                  <input type="text" class="form-control" value="${alumno.nombre} ${alumno.apellidos}" readonly>
+                </div>
 
-                  <div class="mb-3">
-                    <label class="form-label">Alumno</label>
-                    <input type="text" class="form-control"
-                      value="<%= alumno.getNombre() %> <%= alumno.getApellidos() %>" readonly>
-                  </div>
+                <div class="mb-3">
+                  <label class="form-label">Curso</label>
+                  <input type="text" class="form-control" value="${alumno.curso}" readonly>
+                </div>
 
-                  <div class="mb-3">
-                    <label class="form-label">Curso</label>
-                    <input type="text" class="form-control" value="<%= alumno.getCurso() %>" readonly>
-                  </div>
+                <div class="mb-4">
+                  <label class="form-label">Nota</label>
 
-                  <div class="mb-4">
-                    <label class="form-label">Nota</label>
+                  <input type="number" name="nota" min="0" max="10" step="0.1" class="form-control"
+                    value="${alumno.nota}" required>
+                </div>
 
-                    <input type="number" name="nota" min="0" max="10" step="0.1" class="form-control"
-                      value="<%= alumno.getNota() == null ? "" : alumno.getNota() %>" required>
-                  </div>
+                <button class="btn btn-warning" type="submit">
+                  💾 Guardar Nota
+                </button>
 
-                  <button class="btn btn-warning" type="submit">
-                    💾 Guardar Nota
-                  </button>
+                <a class="btn btn-secondary" ${pageContext.request.contextPath}>
+                  ↩ Volver
+                </a>
 
-                  <a class="btn btn-secondary" href="<%=request.getContextPath()%>/alumnos">
-                    ↩ Volver
-                  </a>
+              </form>
 
-                </form>
+            </c:if>
 
-                <% } else { %>
+            <c:if test="${empty alumno}">
 
-                  <div class="alert alert-danger">
-                    No se encontró el alumno.
-                  </div>
+              <div class="alert alert-danger">
+                No se encontró el alumno.
+              </div>
 
-                  <a class="btn btn-secondary" href="<%=request.getContextPath()%>/alumnos">
-                    Volver
-                  </a>
+              <a class="btn btn-secondary" ${pageContext.request.contextPath}>
+                Volver
+              </a>
 
-                  <% } %>
-
-            </div>
+            </c:if>
 
           </div>
 
         </div>
 
-      </body>
+      </div>
 
-      </html>
+    </body>
+
+    </html>
