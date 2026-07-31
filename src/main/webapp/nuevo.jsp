@@ -31,19 +31,19 @@
               <div class="mb-3">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" placeholder="Introduzca el nombre"
-                  value="${nombre}" required>
+                  value="${nombre}" maxlength="50" required>
               </div>
 
               <div class="mb-3">
                 <label class="form-label">Apellidos</label>
                 <input type="text" name="apellidos" class="form-control" placeholder="Introduzca los apellidos"
-                  value="${apellidos}" required>
+                  value="${apellidos}" maxlength="100" required>
               </div>
 
               <div class="mb-4">
                 <label class="form-label">Curso</label>
                 <input type="text" name="curso" class="form-control" placeholder="Ejemplo: Java" value="${curso}"
-                  required>
+                  maxlength="100" required>
               </div>
 
               <button class="btn btn-success" type="submit">

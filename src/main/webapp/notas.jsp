@@ -23,6 +23,12 @@
 
           <div class="card-body">
 
+            <c:if test="${not empty error}">
+              <div class="alert alert-danger">
+                ${error}
+              </div>
+            </c:if>
+            
             <c:if test="${not empty alumno}">
 
               <form action="${pageContext.request.contextPath}/alumnos/notas" method="post">

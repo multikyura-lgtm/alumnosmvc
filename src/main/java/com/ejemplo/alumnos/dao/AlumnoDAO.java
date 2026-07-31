@@ -231,7 +231,7 @@ public Double notaMedia() {
         String sql = "DELETE FROM alumnos WHERE id = ?";
 
         try (Connection con = DB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -240,4 +240,63 @@ public Double notaMedia() {
             throw new RuntimeException("Error eliminando alumno", e);
         }
     }
+
+    public boolean existeAlumno(String nombre, String apellidos) {
+
+        String sql = """
+                SELECT COUNT(*)
+                FROM alumnos
+                WHERE LOWER(nombre) = LOWER(?)
+                  AND LOWER(apellidos) = LOWER(?)
+                """;
+
+        try (Connection con = DB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setString(2, apellidos);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean existeAlumno(String nombre, String apellidos, int idExcluir) {
+
+        String sql = """
+                SELECT COUNT(*)
+                FROM alumnos
+                WHERE LOWER(nombre) = LOWER(?)
+                  AND LOWER(apellidos) = LOWER(?)
+                  AND id <> ?
+                """;
+
+        try (Connection con = DB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setString(2, apellidos);
+            ps.setInt(3, idExcluir);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error comprobando alumno", e);
+        }
+
+        return false;
+    }
+
 }

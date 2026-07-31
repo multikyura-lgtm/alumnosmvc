@@ -131,6 +131,18 @@ if ("creado".equals(mensaje)) {
         return;
     }
 
+    if (dao.existeAlumno(nombre, apellidos)) {
+
+        req.setAttribute("error", "Ya existe un alumno con ese nombre y apellidos.");
+
+        req.setAttribute("nombre", nombre);
+        req.setAttribute("apellidos", apellidos);
+        req.setAttribute("curso", curso);
+
+        req.getRequestDispatcher("/nuevo.jsp").forward(req, resp);
+        return;
+    }
+
     dao.insertar(new Alumno(nombre, apellidos, curso, null));
     resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=creado");
     break;
@@ -141,14 +153,25 @@ if ("creado".equals(mensaje)) {
                 String cursoEditar = req.getParameter("curso");
 
                 nombreEditar = (nombreEditar == null) ? "" : nombreEditar.trim();
-apellidosEditar = (apellidosEditar == null) ? "" : apellidosEditar.trim();
-cursoEditar = (cursoEditar == null) ? "" : cursoEditar.trim();
+                apellidosEditar = (apellidosEditar == null) ? "" : apellidosEditar.trim();
+                cursoEditar = (cursoEditar == null) ? "" : cursoEditar.trim();
 
 if (nombreEditar.isBlank()
         || apellidosEditar.isBlank()
         || cursoEditar.isBlank()) {
 
     req.setAttribute("error", "Todos los campos son obligatorios.");
+    req.setAttribute("alumno",
+            new Alumno(idEditar, nombreEditar, apellidosEditar, cursoEditar, null));
+
+    req.getRequestDispatcher("/editar.jsp").forward(req, resp);
+    return;
+}
+
+if (dao.existeAlumno(nombreEditar, apellidosEditar, idEditar)) {
+
+    req.setAttribute("error", "Ya existe un alumno con ese nombre y apellidos.");
+
     req.setAttribute("alumno",
             new Alumno(idEditar, nombreEditar, apellidosEditar, cursoEditar, null));
 
@@ -169,16 +192,28 @@ if (nombreEditar.isBlank()
                 break;
 
             case "/alumnos/notas":
-                int id = Integer.parseInt(req.getParameter("id"));
-                String notaParam = req.getParameter("nota");
+    int id = Integer.parseInt(req.getParameter("id"));
+    String notaParam = req.getParameter("nota");
 
-                Double nota = (notaParam == null || notaParam.isBlank()) 
-                        ? null 
-                        : Double.parseDouble(notaParam);
+    Double nota = (notaParam == null || notaParam.isBlank())
+            ? null
+            : Double.parseDouble(notaParam);
 
-                dao.actualizarNota(id, nota);
-                resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=nota");
-                break;
+    // Validación de rango
+    if (nota != null && (nota < 0 || nota > 10)) {
+
+        Alumno alumnoNota = dao.buscarPorId(id);
+
+        req.setAttribute("error", "La nota debe estar entre 0 y 10.");
+        req.setAttribute("alumno", alumnoNota);
+
+        req.getRequestDispatcher("/notas.jsp").forward(req, resp);
+        return;
+    }
+
+    dao.actualizarNota(id, nota);
+    resp.sendRedirect(req.getContextPath() + "/alumnos?mensaje=nota");
+    break;
 
                 case "/alumnos/eliminar":
 

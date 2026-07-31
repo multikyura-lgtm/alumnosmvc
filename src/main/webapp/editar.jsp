@@ -37,17 +37,17 @@
 
                 <div class="mb-3">
                   <label class="form-label">Nombre</label>
-                  <input type="text" class="form-control" name="nombre" value="${alumno.nombre}" required>
+                  <input type="text" class="form-control" name="nombre" value="${alumno.nombre}" maxlength="50" required>
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Apellidos</label>
-                  <input type="text" class="form-control" name="apellidos" value="${alumno.apellidos}" required>
+                  <input type="text" class="form-control" name="apellidos" value="${alumno.apellidos}" maxlength="100" required>
                 </div>
 
                 <div class="mb-4">
                   <label class="form-label">Curso</label>
-                  <input type="text" class="form-control" name="curso" value="${alumno.curso}" required>
+                  <input type="text" class="form-control" name="curso" value="${alumno.curso}" maxlength="100" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">
