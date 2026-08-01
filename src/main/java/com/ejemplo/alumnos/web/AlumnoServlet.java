@@ -18,7 +18,7 @@ public class AlumnoServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         dao = new AlumnoDAO();
-        DB.initSchema();
+        
     }
 
     @Override

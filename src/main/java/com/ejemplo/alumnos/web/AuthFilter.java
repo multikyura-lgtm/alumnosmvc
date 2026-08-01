@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @WebFilter("/*")
-public class AuthFilter extends HttpFilter implements Filter {
+public class AuthFilter extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest req,
@@ -22,12 +22,13 @@ public class AuthFilter extends HttpFilter implements Filter {
 
         String path = req.getServletPath();
 
-        if (path.equals("/login")
-                || path.startsWith("/css")
-                || path.startsWith("/js")) {
+       if (path.equals("/login")
+        || path.equals("/registro")
+        || path.startsWith("/css")
+        || path.startsWith("/js")) {
 
-            chain.doFilter(req, resp);
-            return;
+    chain.doFilter(req, resp);
+    return;
         }
 
         HttpSession session = req.getSession(false);

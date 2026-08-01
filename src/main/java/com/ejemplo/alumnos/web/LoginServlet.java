@@ -1,5 +1,8 @@
 package com.ejemplo.alumnos.web;
 
+import com.ejemplo.alumnos.dao.UsuarioDAO;
+import com.ejemplo.alumnos.model.Usuario;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -8,11 +11,18 @@ import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-
+private final UsuarioDAO dao = new UsuarioDAO();
     @Override
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse resp)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
+
+      if ("ok".equals(req.getParameter("registro"))) {
+
+        req.setAttribute(
+            "mensaje",
+            "✅ Usuario registrado correctamente. Ya puedes iniciar sesión.");
+      }
 
         req.getRequestDispatcher("/login.jsp")
                 .forward(req, resp);
@@ -21,25 +31,31 @@ public class LoginServlet extends HttpServlet {
    @Override
 protected void doPost(HttpServletRequest req,
                       HttpServletResponse resp)
-    throws ServletException, IOException {
+        throws ServletException, IOException {
 
-  String usuario = req.getParameter("usuario");
-  String password = req.getParameter("password");
+    req.setCharacterEncoding("UTF-8");
 
-  if ("admin".equals(usuario) && "1234".equals(password)) {
+    String usuario = req.getParameter("usuario");
+    String password = req.getParameter("password");
 
-    HttpSession session = req.getSession();
-    session.setAttribute("usuario", usuario);
+    Usuario u = dao.buscarPorUsuario(usuario);
 
-    resp.sendRedirect(req.getContextPath() +  "/");
+    if (u != null && u.getPassword().equals(password)) {
 
-  } else {
+        HttpSession session = req.getSession();
 
-    req.setAttribute("error", "Usuario o contraseña incorrectos.");
+        session.setAttribute("usuario", u.getUsuario());
+        session.setAttribute("rol", u.getRol());
 
-    req.getRequestDispatcher("/login.jsp")
-        .forward(req, resp);
-  }
+        resp.sendRedirect(req.getContextPath() + "/");
+
+    } else {
+
+        req.setAttribute("error", "Usuario o contraseña incorrectos.");
+
+        req.getRequestDispatcher("/login.jsp")
+                .forward(req, resp);
+    }
 }
 
 }

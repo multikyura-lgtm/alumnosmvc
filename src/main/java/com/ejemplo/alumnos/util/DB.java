@@ -25,23 +25,34 @@ public class DB {
     // Створення таблиці alumnos, якщо її ще немає
     public static void initSchema() {
 
-        String sql = """
-            CREATE TABLE IF NOT EXISTS alumnos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT NOT NULL,
-                apellidos TEXT NOT NULL,
-                curso TEXT NOT NULL,
-                nota REAL
-            );
-            """;
+    String sqlAlumnos = """
+        CREATE TABLE IF NOT EXISTS alumnos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            apellidos TEXT NOT NULL,
+            curso TEXT NOT NULL,
+            nota REAL
+        );
+        """;
 
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    String sqlUsuarios = """
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            rol TEXT NOT NULL DEFAULT 'USER'
+        );
+        """;
 
-            ps.executeUpdate();
+    try (Connection con = getConnection();
+         PreparedStatement psAlumnos = con.prepareStatement(sqlAlumnos);
+         PreparedStatement psUsuarios = con.prepareStatement(sqlUsuarios)) {
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Error creando la tabla alumnos", e);
-        }
+        psAlumnos.executeUpdate();
+        psUsuarios.executeUpdate();
+
+    } catch (SQLException e) {
+        throw new RuntimeException("Error creando las tablas", e);
     }
+}
 }

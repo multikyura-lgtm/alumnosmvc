@@ -29,6 +29,12 @@
 
               <div class="card-body">
 
+                <c:if test="${not empty mensaje}">
+                  <div class="alert alert-success">
+                    ${mensaje}
+                  </div>
+                </c:if>
+                
                 <c:if test="${not empty error}">
                   <div class="alert alert-danger">
                     ${error}
