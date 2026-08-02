@@ -2,6 +2,7 @@ package com.ejemplo.alumnos.web;
 
 import com.ejemplo.alumnos.dao.UsuarioDAO;
 import com.ejemplo.alumnos.model.Usuario;
+import com.ejemplo.alumnos.util.PasswordUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,6 +25,13 @@ private final UsuarioDAO dao = new UsuarioDAO();
             "✅ Usuario registrado correctamente. Ya puedes iniciar sesión.");
       }
 
+      if ("ok".equals(req.getParameter("password"))) {
+
+    req.setAttribute(
+        "mensaje",
+        "✅ Contraseña cambiada correctamente. Inicia sesión de nuevo."
+    );
+}
         req.getRequestDispatcher("/login.jsp")
                 .forward(req, resp);
     }
@@ -40,10 +48,12 @@ protected void doPost(HttpServletRequest req,
 
     Usuario u = dao.buscarPorUsuario(usuario);
 
-    if (u != null && u.getPassword().equals(password)) {
+    if (u != null
+        && PasswordUtil.checkPassword(password, u.getPassword())) {
 
-        HttpSession session = req.getSession();
+      HttpSession session = req.getSession();
 
+        session.setAttribute("usuarioId", u.getId());
         session.setAttribute("usuario", u.getUsuario());
         session.setAttribute("rol", u.getRol());
 

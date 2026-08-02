@@ -30,35 +30,76 @@ public class UsuarioDAO {
       throw new RuntimeException("Error insertando usuario", e);
     }
   }
-public Usuario buscarPorUsuario(String usuario) {
+
+  public Usuario buscarPorUsuario(String usuario) {
 
     String sql = """
-            SELECT *
-            FROM usuarios
-            WHERE usuario = ?
-            """;
+        SELECT *
+        FROM usuarios
+        WHERE usuario = ?
+        """;
+
+    try (Connection con = DB.getConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
+
+      ps.setString(1, usuario);
+
+      ResultSet rs = ps.executeQuery();
+
+      if (rs.next()) {
+
+        return new Usuario(
+            rs.getInt("id"),
+            rs.getString("usuario"),
+            rs.getString("password"),
+            rs.getString("rol"));
+      }
+
+      return null;
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Error buscando usuario", e);
+    }
+  }
+
+  public void actualizarPassword(int id, String passwordHash) {
+
+    String sql = """
+        UPDATE usuarios
+        SET password = ?
+        WHERE id = ?
+        """;
+
+    try (Connection con = DB.getConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
+
+      ps.setString(1, passwordHash);
+      ps.setInt(2, id);
+
+      ps.executeUpdate();
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Error actualizando contraseña", e);
+    }
+  }
+public void cambiarPassword(Integer id, String password) {
+
+    String sql = """
+        UPDATE usuarios
+        SET password = ?
+        WHERE id = ?
+        """;
 
     try (Connection con = DB.getConnection();
          PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setString(1, usuario);
+        ps.setString(1, password);
+        ps.setInt(2, id);
 
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-
-            return new Usuario(
-                    rs.getInt("id"),
-                    rs.getString("usuario"),
-                    rs.getString("password"),
-                    rs.getString("rol")
-            );
-        }
-
-        return null;
+        ps.executeUpdate();
 
     } catch (SQLException e) {
-        throw new RuntimeException("Error buscando usuario", e);
+        throw new RuntimeException("Error cambiando contraseña", e);
     }
 }
 }

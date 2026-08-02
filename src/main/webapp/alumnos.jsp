@@ -24,11 +24,28 @@
 
           <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">🎓 Listado de Alumnos</h3>
-            <div>
-              <a class="btn btn-success btn-sm" href="${pageContext.request.contextPath}/alumnos/nuevo">➕ Nuevo</a>
+            <div class="d-flex align-items-center gap-2">
+            
+              <span class="badge bg-light text-dark">
+                👤 ${sessionScope.usuario}
+              </span>
+            
+              <a class="btn btn-warning btn-sm" href="${pageContext.request.contextPath}/cambiar-password">
+                🔑 Cambiar contraseña
+              </a>
+            
+              <a class="btn btn-success btn-sm" href="${pageContext.request.contextPath}/alumnos/nuevo">
+                ➕ Nuevo
+              </a>
+            
               <a class="btn btn-light btn-sm" href="${pageContext.request.contextPath}/">
                 🏠 Inicio
               </a>
+            
+              <a class="btn btn-danger btn-sm" href="${pageContext.request.contextPath}/logout">
+                🚪 Cerrar sesión
+              </a>
+            
             </div>
           </div>
 

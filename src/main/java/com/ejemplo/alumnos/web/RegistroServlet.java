@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.ejemplo.alumnos.util.PasswordUtil;
 
 import java.io.IOException;
 
@@ -73,7 +74,9 @@ if (dao.buscarPorUsuario(usuario) != null) {
 
     return;
 }
-    dao.insertar(new Usuario(usuario, password, "USER"));
+    String passwordHash = PasswordUtil.hashPassword(password);
+
+dao.insertar(new Usuario(usuario, passwordHash, "USER"));
 
     resp.sendRedirect(req.getContextPath() + "/login?registro=ok");
 }
