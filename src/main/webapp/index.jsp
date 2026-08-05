@@ -22,16 +22,22 @@
 
           </a>
 
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center gap-2">
 
-            <span class="text-white me-3 fw-semibold">
+            <span class="badge bg-light text-dark">
               👤 ${sessionScope.usuario}
             </span>
 
+            <span class="badge bg-info">
+              ${sessionScope.rol}
+            </span>
+
+            <a class="btn btn-warning btn-sm" href="${pageContext.request.contextPath}/cambiar-password">
+              🔑 Cambiar contraseña
+            </a>
+
             <a class="btn btn-outline-light" href="${pageContext.request.contextPath}/logout">
-
               🚪 Salir
-
             </a>
 
           </div>
@@ -59,7 +65,7 @@
 
             <div class="row mt-4">
 
-              <div class="col-md-6 mb-3">
+              <div class="col-md-12 mb-3">
 
                 <div class="card border-success h-100 shadow-sm">
 
@@ -69,39 +75,25 @@
 
                     <h4>Listado de alumnos</h4>
 
-                    <p class="text-muted">
-                      Ver, editar, eliminar y asignar notas.
-                    </p>
+                    <c:choose>
+                    
+                      <c:when test="${sessionScope.rol == 'ADMIN'}">
+                        <p class="text-muted">
+                          Ver, editar, eliminar y asignar notas.
+                        </p>
+                      </c:when>
+                    
+                      <c:otherwise>
+                        <p class="text-muted">
+                          Ver la lista y consultar las notas de los alumnos.
+                        </p>
+                      </c:otherwise>
+                    
+                    </c:choose>
 
                     <a class="btn btn-success w-100" href="${pageContext.request.contextPath}/alumnos">
 
                       Abrir
-
-                    </a>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              <div class="col-md-6 mb-3">
-
-                <div class="card border-primary h-100 shadow-sm">
-
-                  <div class="card-body text-center">
-
-                    <h1>➕</h1>
-
-                    <h4>Nuevo alumno</h4>
-
-                    <p class="text-muted">
-                      Registrar un nuevo alumno en la base de datos.
-                    </p>
-
-                    <a class="btn btn-primary w-100" href="${pageContext.request.contextPath}/alumnos/nuevo">
-
-                      Crear
 
                     </a>
 

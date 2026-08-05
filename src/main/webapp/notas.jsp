@@ -28,7 +28,7 @@
                 ${error}
               </div>
             </c:if>
-            
+
             <c:if test="${not empty alumno}">
 
               <form action="${pageContext.request.contextPath}/alumnos/notas" method="post">
@@ -56,7 +56,7 @@
                   💾 Guardar Nota
                 </button>
 
-                <a class="btn btn-secondary" ${pageContext.request.contextPath}>
+                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/alumnos">
                   ↩ Volver
                 </a>
 
@@ -70,8 +70,8 @@
                 No se encontró el alumno.
               </div>
 
-              <a class="btn btn-secondary" ${pageContext.request.contextPath}>
-                Volver
+              <a class="btn btn-secondary" href="${pageContext.request.contextPath}/alumnos">
+                ↩ Volver
               </a>
 
             </c:if>

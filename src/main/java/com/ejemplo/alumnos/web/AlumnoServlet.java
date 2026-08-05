@@ -3,7 +3,7 @@ package com.ejemplo.alumnos.web;
 import com.ejemplo.alumnos.dao.AlumnoDAO;
 import com.ejemplo.alumnos.model.Alumno;
 import com.ejemplo.alumnos.util.DB;
-
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +26,19 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
 
     String path = req.getServletPath();
+
+      HttpSession session = req.getSession(false);
+
+String rol = session == null
+        ? null
+        : (String) session.getAttribute("rol");
+
+        if (!"/alumnos".equals(path)
+        && !"ADMIN".equals(rol)) {
+
+    req.getRequestDispatcher("/403.jsp").forward(req, resp);
+    return;
+}
 
     switch (path) {
         // Четко обрабатываем главный путь списка и поиска
@@ -100,15 +113,24 @@ if ("creado".equals(mensaje)) {
             break;
     }
 }
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+   @Override
+protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
-        String path = req.getServletPath();
+    req.setCharacterEncoding("UTF-8");
+    String path = req.getServletPath();
 
+    String rol = (String) req.getSession().getAttribute("rol");
+
+    if (!"ADMIN".equals(rol)) {
+        resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        return;
+    }
+ 
         switch (path) {
             case "/alumnos":
+               
+
     String nombre = req.getParameter("nombre");
     String apellidos = req.getParameter("apellidos");
     String curso = req.getParameter("curso");
